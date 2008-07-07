@@ -34,4 +34,4 @@
     # app注册，为app分配唯一ID，app的发布、运行和维护都基于ID进行
     # app源程序管理，将用户的app放在AE的DFS上
 
-[http://code.google.com/p/serang/ 原型开发计划]
+[http://code.google.com/p/serang/wiki/DevPlan 原型开发计划]
