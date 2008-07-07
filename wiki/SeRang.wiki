@@ -1,5 +1,3 @@
-SeRang engine for Rational application network group
-
 =简述=
 
 ==  appEngine有两个基本的特点：==
