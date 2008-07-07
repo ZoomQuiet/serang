@@ -36,31 +36,6 @@ SeRang engine for Rational application network group
     # app注册，为app分配唯一ID，app的发布、运行和维护都基于ID进行
     # app源程序管理，将用户的app放在AE的DFS上
 
-=名称=
-不过这名字忒土了，要有趣有意义好记，
-建议先在社区中讨论一下
-
-比如说 息壤 XiRang
-等等 ;)
-
-息壤，信息的土壤?
-
-NOT! 息壤 是中国神话中的神物，可以生成土壤的法宝哪，
-所以，可以是
-SeRang
-= SeRang engine for Rational application network group
-面向理性应用群网的息壤引擎
-
-咔咔咔！
-
-
-息壤 是中国神话中的神物，可以生成土壤的法宝哪，
-http://zhidao.baidu.com/question/11894088.html?fr=qrl
-http://scholar.ilib.cn/abstract.aspx?A=mzsfgdzkxxxb200201010
-等等，都有相关描述的...
-
-我给理解成能够生长应用的土壤，哈哈
-
 =原型开发计划=
     # 应用可运行
       * 环境,应用提前装好
