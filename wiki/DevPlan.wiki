@@ -30,6 +30,7 @@ SeRang
       * DataStore封装
       * DFS封装
       * 其他封装
-=遇到的问题=
+=一些尝试=
 [http://code.google.com/p/serang/wiki/InstallMod_python 安装mod_python]
+
 HowToSupport
