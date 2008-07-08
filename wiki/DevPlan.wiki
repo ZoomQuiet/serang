@@ -30,3 +30,5 @@ SeRang
       * DataStore封装
       * DFS封装
       * 其他封装
+=遇到的问题=
+安装mod_python
