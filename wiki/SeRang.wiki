@@ -39,4 +39,7 @@
 
 == [http://code.google.com/p/serang/wiki/DevPlan 原型开发计划] ==
 
+
+[StepByStep 学习过程]
+
 [XyzStory 心情故事]
