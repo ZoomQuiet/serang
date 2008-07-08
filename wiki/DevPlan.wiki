@@ -32,3 +32,4 @@ SeRang
       * 其他封装
 =遇到的问题=
 [http://code.google.com/p/serang/wiki/InstallMod_python 安装mod_python]
+HowToSupport
