@@ -40,5 +40,34 @@ mod_python提供了apache每一个重要的处理器。mod_python处理器缺省
 http://www.cnblogs.com/zhengyun_ustc/archive/2006/11/20/django_apache_win32.html
 
 http://hideto.javaeye.com/blog/42538
+{{{
+<VirtualHost *:80>
 
-但这种方式，未必适合。
+    <Location "/">
+        SetHandler python-program
+        PythonPath "['/home/zhaofw/workspace/serang']+ sys.path"
+        PythonHandler django.core.handlers.modpython
+        SetEnv DJANGO_SETTINGS_MODULE apps.settings_apache
+        PythonAutoReload On
+        PythonDebug On
+    </Location>
+    Alias /site_media /home/zhaofw/workspace/serang/apps/media
+    Alias /media /usr/lib/python2.5/site-packages/django/contrib/admin/media
+    <Location "/site_media">
+        SetHandler None
+    </Location>
+    <Location "/media">
+        SetHandler None
+    </Location>
+
+    #PythonPath "['/home/zhaofw/workspace/serang/apps'] + sys.path"
+    #AddHandler mod_python .py
+    #PythonHandler mptest
+    #PythonDebug On
+</VirtualHost>
+参考 ： http://www.woodpecker.org.cn/obp/django/django-stepbystep/newtest/doc/tut12.html#id15
+}}}
+但这种方式，未必适合这里的需求，先配来看看。
+
+出现了这个错误：
+ImproperlyConfigured: Error importing middleware django.contrib.sessions.middleware: "No module named wiki"
