@@ -5,7 +5,7 @@ StepByStep
 {{{
 当一个请求发出时,apache通过调用mod_python中的处理器分步处理请求,Mod_python首先检查请求的那个处理器是否在配置文件中指定了(记住，它的角色是发报机dispatcher),在我们的例子中,mod_python除了调用默认的那个处理器外不会调用其他的任何处理器,然后,mod_python会发现"pythonHandler myscript"指示,并按照下面的步骤来进行:
 
-1．如果以前没有做过，那么就把pythonHandler指定的那个目录加到sys.path中。*哪个目录？*
+1．如果以前没有做过，那么就把pythonHandler指定的那个目录加到sys.path中。
 
 2．尝试引入myscript的模块(注意,如果myscript在pythonHandler指定那个目录的子目录中的话,引入会出错,因为子目录并没有加到sys.path中,解决这种情况的方法是使用包)例如:”pythonHandler subdir.myscript”
 
@@ -14,6 +14,7 @@ StepByStep
 4．调用这个方法，并把request对象传递给它。 
 }}}
 
+1.指的是哪个目录？是否意味着这样不会有性能问题，如果在handler中装载目录，是否也没问题呢
 
 {{{
 Python的C API使python具有创建子解释器的能力。在Py newInterpreter()方法的文档中有关于子解释器的更详细的描述。每一个子解释器都有它自己的单独的命名空间，不能被其他的子解释器访问到。子解释器使那些运行在apache服务器中的程序互不干扰。 
