@@ -1,7 +1,8 @@
 DevPlan 
  
+{{{
 checking for Py_NewInterpreter in -lpython2.5... no
 configure: error: Can not link to python
-
+}}}
 由于我的python是从deb安装的，缺少src
 安装python-dev后，解决
