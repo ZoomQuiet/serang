@@ -71,3 +71,6 @@ http://hideto.javaeye.com/blog/42538
 
 出现了这个错误：
 ImproperlyConfigured: Error importing middleware django.contrib.sessions.middleware: "No module named wiki"
+
+错误原因找到了，和上面的配置没关系。
+我希望在apps下放所有的应用，这些应用共享settings的配置，对于AE来说，这是正常的，不需要应用去配置数据库，模板应该在应用内部，可能在某个地方写错了，再找找。
