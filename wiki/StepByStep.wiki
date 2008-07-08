@@ -10,4 +10,4 @@ The basic goal of the Linux Virtual Server Project is to:
 
 The LVS cluster system is also known as load balancing server cluster.
 }}}
-[http://kb.linuxvirtualserver.org/wiki/Load_balancing Load Balancing]
+    [http://kb.linuxvirtualserver.org/wiki/Load_balancing Load Balancing]
