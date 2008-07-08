@@ -38,3 +38,5 @@
 把不明确的问题丢出来，一起蹂躏
 
 == [http://code.google.com/p/serang/wiki/DevPlan 原型开发计划] ==
+
+[XyzStory 心情故事]
