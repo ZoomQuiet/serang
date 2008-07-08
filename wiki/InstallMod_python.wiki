@@ -38,5 +38,6 @@ mod_python提供了apache每一个重要的处理器。mod_python处理器缺省
 参考：
 
 http://www.cnblogs.com/zhengyun_ustc/archive/2006/11/20/django_apache_win32.html
+
 http://hideto.javaeye.com/blog/42538
 但这种方式，未必适合。
