@@ -1,6 +1,6 @@
 StepByStep
 
-这么简单就可以监控目录变化了，真伟大
+这么简单就可以监控目录/文件变化了，真伟大
 
 {{{
 from pyinotify import *
