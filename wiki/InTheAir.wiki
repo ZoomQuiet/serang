@@ -5,3 +5,6 @@ SeRang
 [HowToSupport 如何支持更多框架]
 
 每个应用，是使用独立的python实例还是使用同一个？哪种方式更好，各有什么优缺点？
+
+
+[AboutDjango 如何在一台机器上运行很多django应用]
