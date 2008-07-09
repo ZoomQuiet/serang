@@ -30,7 +30,7 @@ return modpython.handler(req)
 urlpatterns = patterns('',
     (r'^wiki', include('wiki.urls')),
     (r'^blog',include('blog.urls')),
-    (r'^ddd','ddd.urls'),#比如增加一个ddd模块
+    (r'^ddd',include('ddd.urls')),#比如增加一个ddd模块
 )
 }}}
 这个问题Jiahua回答过我
