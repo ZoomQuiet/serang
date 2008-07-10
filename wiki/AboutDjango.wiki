@@ -1,9 +1,76 @@
 如果使用Django，每台MachineNode上会运行多个Django的应用，几个问题带确定：
 
-==前提==
+=前提=
 通过以下的URL访问不同的应用
 http://host:port/wiki
+
 http://host:port/blog
+
+=目前的解决方案=
+
+为每个应用写一个配置文件，如下
+{{{
+appid = "wiki"
+
+prefix = ""
+
+patterns = [
+    (r'^wiki/$', 'wiki.views.index'),
+    (r'^wiki/(?P<pagename>\w+)/$', 'wiki.views.index'),
+    (r'^wiki/(?P<pagename>\w+)/edit/$', 'wiki.views.edit'),
+    (r'^wiki/(?P<pagename>\w+)/save/$', 'wiki.views.save')]
+    
+template_paths=(
+  'templates'
+)    
+}}}
+
+commonHandler负责加载各个应用的配置
+{{{
+def handler(req):
+
+    moduleName = getModuleName(req.uri)
+
+    mod = __import__(moduleName+"/app")
+      
+    #urls就是settings中指定的那个  
+    urls.appendUrlPatterns(mod.appid,mod.prefix,mod.patterns)    
+
+    return modpython.handler(req)
+}}}
+
+在urls中增加如下方法
+{{{
+#可能有几个写在这里
+urlpatterns = patterns('',
+    (r'^ddd/','zz.views.dd')
+)
+
+modules = []
+
+def appendUrlPatterns(appid,prefix,patterns):
+    """for auto load"""
+    #check
+    if modules.__contains__(appid):
+        return
+    
+    modules.append(appid)
+    
+    for t in patterns:
+        regex, view_or_include = t[:2]
+        default_kwargs = t[2:]
+        if type(view_or_include) == list:
+            urlpatterns.append(RegexURLResolver(regex, view_or_include[0], *default_kwargs))
+        else:
+            urlpatterns.append(RegexURLPattern(regex, prefix and (prefix + '.' + view_or_include) or view_or_include, *default_kwargs))
+    
+}}}
+
+很丑陋，但可以跑，模板估计也可以用通常的方式处理。
+先把原型搭好，终于可以进行下一步工作了。
+一直再想一个问题，是不是作的这些事情本来就有现成的支持方案。那就慢慢郁闷吧orz~（这个是带尾巴的）
+
+=之前的问题=
 
 ==每个都是独立的应用吗==
 如果是独立的应用，应该如何加载。django的那个settings.py挺麻烦
