@@ -18,3 +18,7 @@ Apache的mod_proxy在使用ProxyRemote指令时，可以看作是一个正向代
 我看了这个文档
 
 [http://man.chinaunix.net/newsoft/ApacheManual/mod/mod_proxy.html mod_proxy中文文档]
+
+[http://httpd.apache.org/docs/2.2/mod/mod_proxy.html mod_proxy]
+[http://httpd.apache.org/docs/2.2/mod/mod_proxy_http.html mod_proxy_http]
+[http://httpd.apache.org/docs/2.2/mod/mod_proxy_balancer.html mod_proxy_balancer]
