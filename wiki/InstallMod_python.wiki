@@ -1,4 +1,4 @@
-DevPlan 
+ModPython
  
 ==install mod_python==
 {{{
