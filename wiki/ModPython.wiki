@@ -28,11 +28,6 @@ Python的C API使python具有创建子解释器的能力。在Py newInterpreter(
 这个虚拟服务器指的是什么？一个python的运行环境？
 
 
-AddHandler mod_python .prog，告诉Apache PythonHandler会用来处理该目录下所有以“.prog”结尾的文件请求。也就是说，您也可以通过请求http://localhost/py/fake.prog来得到同样的文档。实际上，这是一个强大的功能，它可以不必使用Apache本身普通的选择文件逻辑，稍后会详细介绍。
-
-PythonHandler test行可以在Apache初始化的时候，高效地运行import test。无论什么时候一个相关的请求到来，test.handler()函数都会被调用，同时一个Apache请求对象会被传入。
-
-每个服务器进程都会载入test.py。Apache初始化时，它经常建立几个服务器进程，而每个进程都会载入和初始化一个全新的test.py
 
 ===理解解释器实例===
 
