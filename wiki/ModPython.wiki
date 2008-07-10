@@ -2,6 +2,8 @@ StepByStep
 
 [http://wiki.woodpecker.org.cn/moin/modpythoncn mod_python中文翻译]
 
+[InstallMod_python 安装mod_python]
+
 {{{
 当一个请求发出时,apache通过调用mod_python中的处理器分步处理请求,Mod_python首先检查请求的那个处理器是否在配置文件中指定了(记住，它的角色是发报机dispatcher),
 在我们的例子中,mod_python除了调用默认的那个处理器外不会调用其他的任何处理器,然后,mod_python会发现"pythonHandler myscript"指示,并按照下面的步骤来进行:
