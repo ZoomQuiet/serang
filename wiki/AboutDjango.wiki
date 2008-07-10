@@ -31,10 +31,12 @@ def handler(req):
 
     moduleName = getModuleName(req.uri)
 
-    mod = __import__(moduleName+"/app")
-      
-    #urls就是settings中指定的那个  
-    urls.appendUrlPatterns(mod.appid,mod.prefix,mod.patterns)    
+     try:
+        mod = __import__(moduleName+"/app")
+        #urls就是settings中指定的那个  
+        urls.appendUrlPatterns(mod.appid,mod.prefix,mod.patterns)    
+    except:
+        raise404("Can not found module : " + moduleName + "/app")
 
     return modpython.handler(req)
 }}}
