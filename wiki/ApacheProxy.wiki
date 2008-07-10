@@ -1,5 +1,8 @@
 [StepByStep 返回]
-=正向和反向代理=
+
+[http://man.chinaunix.net/newsoft/ApacheManual/mod/mod_proxy.html mod_proxy中文文档]
+
+=正向和反向代理(转)=
 
 ==Apache可以被配置为正向(forward)和反向(reverse)代理==
 
@@ -18,9 +21,7 @@
 可以使用ProxyPass指令激活反向代理(在RewriteRule指令中使用[P]标记也可以)。配置反向代理并不需要打开ProxyRequests指令。
 简单示例
 
-下面的例子仅仅是为了给你一个基本概念而帮助入门而已，请仔细阅读每个指令的文档。
-
-另外，如果想使用缓冲特性，请查看mod_cache文档。
+想使用缓冲特性，请查看mod_cache文档。
 正向代理
 {{{
 ProxyRequests On
