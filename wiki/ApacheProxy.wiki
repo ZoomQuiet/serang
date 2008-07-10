@@ -15,6 +15,6 @@ Apache的mod_proxy在使用ProxyRemote指令时，可以看作是一个正向代
 
 反向代理使用ProxyPass和ProxyPassReverse指令进行配置。可以使用mod_cache和正向代理结合启用缓冲功能。
 
-具体查看文档
+我看了这个文档
 
 [http://man.chinaunix.net/newsoft/ApacheManual/mod/mod_proxy.html mod_proxy中文文档]
