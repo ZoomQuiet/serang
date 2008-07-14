@@ -1,7 +1,7 @@
 SeRang
 =基础系统结构=
 
-==名词约定==
+==名词约定(AE的各个模块)==
 || AE || appEngine ||
 || MachineNode(MN)  || 机器节点，AE中的一台提供服务的机器 ||
 || MachineRegNode(MR) || 机器注册节点，用于管理AN（从硬件的角度）、机器分组 ||
