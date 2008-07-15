@@ -10,6 +10,6 @@
 [HaProxy HAProxy]
 
 初步的理解是，LVS很强，但配置也很麻烦，并且需要Ldirector实现监控， NginX和HAProxy性能差一点，但使用、监控都很方便。
-性能上NginX要比apachce快很多，可以作为apache的代替品。
+性能上NginX要比apache快很多，可以作为apache的代替品。
 参考下面的这个文章
 [http://blog.s135.com/read.php/351.htm Nginx 0.6.31 + PHP 5.2.6（FastCGI）搭建胜过Apache十倍的Web服务器（第3版）]
