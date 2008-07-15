@@ -17,6 +17,6 @@ The LVS cluster system is also known as load balancing server cluster.
     * HAproxy ,基于 layer 7
           o 效率相对较低，部署容易，有web界面便于观察
 
-[PyiNotify pyinotify]
+[PyiNotify pyinotify监控]
 
 [ProxyBalancer]
