@@ -2,21 +2,6 @@ SeRang
 
 ModPython
 
-[http://www.linuxvirtualserver.org/ LVS]
-{{{
-The basic goal of the Linux Virtual Server Project is to:
-
-    Build a high-performance and highly available server for Linux using clustering technology, which provides good scalability, reliability and serviceability.
-
-The LVS cluster system is also known as load balancing server cluster.
-}}}
-    [http://kb.linuxvirtualserver.org/wiki/Load_balancing Load Balancing]
-
-    *  Linux Virtural Server,基于内核,通过修改TCP/IP数据报文实现负载均衡，确保可用性的守护进程ldirectord
-          o 高性能，部署相对麻烦，不便于观察
-    * HAproxy ,基于 layer 7
-          o 效率相对较低，部署容易，有web界面便于观察
-
 [PyiNotify pyinotify监控]
 
 [ProxyBalancer]
