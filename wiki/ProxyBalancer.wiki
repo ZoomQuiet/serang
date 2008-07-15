@@ -8,7 +8,7 @@
 
 =[http://wiki.codemongers.com/NginxChsWhyUseIt NginX]=
 
-Nginx ("engine x") 是一个高性能的 HTTP 和反向代理服务器，也是一个 IMAP/POP3/SMTP 代理服务器。 Nginx 是由 Igor Sysoev 为俄罗斯访问量第二的 Rambler.ru 站点开发的，它已经在该站点运行超过两年半了。Igor 将源代码以类BSD许可证的形式发布。
+NginX ("engine x") 是一个高性能的 HTTP 和反向代理服务器，也是一个 IMAP/POP3/SMTP 代理服务器。 Nginx 是由 Igor Sysoev 为俄罗斯访问量第二的 Rambler.ru 站点开发的，它已经在该站点运行超过两年半了。Igor 将源代码以类BSD许可证的形式发布。
 
 初步的理解是，LVS很强，但配置也很麻烦，并且需要Ldirector实现监控， NginX和HAProxy性能差一点，但使用、监控都很方便。
 性能上NginX要比apache快很多，可以作为apache的代替品。
@@ -19,4 +19,20 @@ Nginx ("engine x") 是一个高性能的 HTTP 和反向代理服务器，也是�
 
 [http://blog.chinaunix.net/u2/60722/showart_474181.html 一篇文章]
 
+网站使用NginX的，从07年10月开始增长速度的非常迅猛。NginX非常有用的一个东西是：
+    # 平滑改变配置
+    # 平滑升级到新的二进制代码
+{{{
+# nginx -t -c /etc/nginx/nginx.conf
+2006/09/16 13:07:10 [info] 15686#0: the configuration file /etc/nginx/nginx.conf syntax is ok
+2006/09/16 13:07:10 [info] 15686#0: the configuration file /etc/nginx/nginx.conf was tested successfully
+# ps aux | egrep '(PID|nginx)'
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root      2213  0.0  0.0   6784  2036 ?        Ss   03:01   0:00 nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx.conf
+# kill -HUP 2213
+}}}
+
+当 nginx 接收到 HUP 信号，它会尝试先解析配置文件（如果指定配置文件，就使用指定的，否则使用默认的），成功的话，就应用新的配置文件（例如：重新打开日志文件或监听的套接字）。之后，nginx 运行新的工作进程并从容关闭旧的工作进程。通知工作进程关闭监听套接字但是继续为当前连接的客户提供服务。所有客户端的服务完成后，旧的工作进程被关闭。如果新的配置文件应用失败，nginx 将继续使用旧的配置进行工作。
+
+这样可以实现动态负载均衡的需要，明天来测试这个功能
 =[http://haproxy.1wt.eu/ HAProxy]=
