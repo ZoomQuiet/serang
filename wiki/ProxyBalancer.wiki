@@ -5,13 +5,16 @@
 
 =[LvsPage LVS]=
 
-=[NginX NginX]=
+
+=[http://wiki.codemongers.com/NginxChsWhyUseIt NginX]=
 
 Nginx ("engine x") 是一个高性能的 HTTP 和反向代理服务器，也是一个 IMAP/POP3/SMTP 代理服务器。 Nginx 是由 Igor Sysoev 为俄罗斯访问量第二的 Rambler.ru 站点开发的，它已经在该站点运行超过两年半了。Igor 将源代码以类BSD许可证的形式发布。
-
-=[HaProxy HAProxy]=
 
 初步的理解是，LVS很强，但配置也很麻烦，并且需要Ldirector实现监控， NginX和HAProxy性能差一点，但使用、监控都很方便。
 性能上NginX要比apache快很多，可以作为apache的代替品。
 参考下面的这个文章
 [http://blog.s135.com/read.php/351.htm Nginx 0.6.31 + PHP 5.2.6（FastCGI）搭建胜过Apache十倍的Web服务器（第3版）]
+
+[http://www.rkblog.rk.edu.pl/w/p/django-nginx/ django-nginx]
+
+=[http://haproxy.1wt.eu/ HAProxy]=
