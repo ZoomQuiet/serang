@@ -22,6 +22,8 @@ NginX ("engine x") 是一个高性能的 HTTP 和反向代理服务器，也是�
 网站使用NginX的，从07年10月开始增长速度的非常迅猛。NginX非常有用的一个东西是：
     # 平滑改变配置
     # 平滑升级到新的二进制代码
+
+修改配置文件的例子
 {{{
 # nginx -t -c /etc/nginx/nginx.conf
 2006/09/16 13:07:10 [info] 15686#0: the configuration file /etc/nginx/nginx.conf syntax is ok
