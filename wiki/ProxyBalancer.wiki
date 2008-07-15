@@ -25,6 +25,7 @@ NginX ("engine x") 是一个高性能的 HTTP 和反向代理服务器，也是�
 
 修改配置文件的例子
 {{{
+#在重载前，先测试一下配置文件
 # nginx -t -c /etc/nginx/nginx.conf
 2006/09/16 13:07:10 [info] 15686#0: the configuration file /etc/nginx/nginx.conf syntax is ok
 2006/09/16 13:07:10 [info] 15686#0: the configuration file /etc/nginx/nginx.conf was tested successfully
