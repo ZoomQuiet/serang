@@ -97,7 +97,7 @@ socket.error: (11, 'Resource temporarily unavailable')
 
 
 ==nginx flug in threaded==
-这个太牛的，cpu占一半左右，但这是第一次测试的结果，再继续测试的时候，速度变为1/2
+这个太牛的，cpu占一半左右，但这是第一次测试的结果，再继续测试的时候，速度变为1/2，从起fsgi后又变快，不知道是不是和我的程序有关系
 {{{
 Concurrency Level:      100
 Time taken for tests:   2.666 seconds
