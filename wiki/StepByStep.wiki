@@ -5,3 +5,5 @@ ModPython
 [PyiNotify pyinotify监控]
 
 [ProxyBalancer]
+
+[CGI]
