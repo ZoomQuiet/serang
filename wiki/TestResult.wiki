@@ -1,0 +1,116 @@
+一个demo的wiki页面，执行一次sqlite3查询一条记录，经过简单计算返回
+
+100 并发，执行2000次
+
+==django自带==
+{{{
+
+Document Path:          /wiki/
+Document Length:        457 bytes
+
+Concurrency Level:      100
+Time taken for tests:   6.434 seconds
+Complete requests:      2000
+Failed requests:        0
+Write errors:           0
+Total transferred:      1170000 bytes
+HTML transferred:       914000 bytes
+Requests per second:    310.87 [#/sec] (mean)
+Time per request:       321.682 [ms] (mean)
+Time per request:       3.217 [ms] (mean, across all concurrent requests)
+Transfer rate:          177.59 [Kbytes/sec] received
+
+}}}
+cpu占用一半，最后会出错
+{{{
+  File "/usr/lib/python2.5/site-packages/django/core/servers/basehttp.py", line 273, in run
+    self.finish_response()
+  File "/usr/lib/python2.5/site-packages/django/core/servers/basehttp.py", line 312, in finish_response
+    self.write(data)
+  File "/usr/lib/python2.5/site-packages/django/core/servers/basehttp.py", line 391, in write
+    self.send_headers()
+  File "/usr/lib/python2.5/site-packages/django/core/servers/basehttp.py", line 443, in send_headers
+    self.send_preamble()
+  File "/usr/lib/python2.5/site-packages/django/core/servers/basehttp.py", line 373, in send_preamble
+    'Date: %s\r\n' % time.asctime(time.gmtime(time.time()))
+  File "/usr/lib/python2.5/socket.py", line 262, in write
+    self.flush()
+  File "/usr/lib/python2.5/socket.py", line 249, in flush
+    self._sock.sendall(buffer)
+}}}
+
+==mod_python==
+cpu占用很高
+{{{
+Concurrency Level:      100
+Time taken for tests:   9.703 seconds
+Complete requests:      2000
+Failed requests:        0
+Write errors:           0
+Total transferred:      1262000 bytes
+HTML transferred:       914000 bytes
+Requests per second:    206.12 [#/sec] (mean)
+Time per request:       485.151 [ms] (mean)
+Time per request:       4.852 [ms] (mean, across all concurrent requests)
+Transfer rate:          127.01 [Kbytes/sec] received
+}}}
+
+==nginx flug in profork==
+{{{
+Concurrency Level:      100
+Time taken for tests:   17.739 seconds
+Complete requests:      2000
+Failed requests:        1
+   (Connect: 0, Receive: 0, Length: 1, Exceptions: 0)
+Write errors:           0
+Non-2xx responses:      1
+Total transferred:        1187731 bytes
+HTML transferred:       913716 bytes
+Requests per second:    112.74 [#/sec] (mean)
+Time per request:       886.968 [ms] (mean)
+Time per request:       8.870 [ms] (mean, across all concurrent requests)
+Transfer rate:           65.39 [Kbytes/sec] received
+}}}
+有失败1次，不是每次都会出现，cpu占满
+{{{
+Traceback (most recent call last):
+  File "./manage.py", line 11, in <module>
+    execute_manager(settings)
+  File "/usr/lib/python2.5/site-packages/django/core/management.py", line 1672, in execute_manager
+    execute_from_command_line(action_mapping, argv)
+  File "/usr/lib/python2.5/site-packages/django/core/management.py", line 1611, in execute_from_command_line
+    action_mapping[action](args[1:])
+  File "/usr/lib/python2.5/site-packages/django/core/management.py", line 1303, in runfcgi
+    runfastcgi(args)
+  File "/usr/lib/python2.5/site-packages/django/core/servers/fastcgi.py", line 155, in runfastcgi
+    WSGIServer(WSGIHandler(), **wsgi_opts).run()
+  File "/var/lib/python-support/python2.5/flup/server/fcgi_fork.py", line 131, in run
+    ret = PreforkServer.run(self, sock)
+  File "/var/lib/python-support/python2.5/flup/server/preforkserver.py", line 121, in run
+    if not self._spawnChild(sock): break
+  File "/var/lib/python-support/python2.5/flup/server/preforkserver.py", line 294, in _spawnChild
+    self._child(sock, parent)
+  File "/var/lib/python-support/python2.5/flup/server/preforkserver.py", line 360, in _child
+    parent.send('\xff')
+socket.error: (11, 'Resource temporarily unavailable')
+}}}
+
+
+==nginx flug in threaded==
+这个太牛的，cpu占一半左右，但这是第一次测试的结果，再继续测试的时候，速度变为1/2
+{{{
+Concurrency Level:      100
+Time taken for tests:   2.666 seconds
+Complete requests:      2000
+Failed requests:        1562
+   (Connect: 0, Receive: 0, Length: 1562, Exceptions: 0)
+Write errors:           0
+Non-2xx responses:      1562
+Total transferred:      767822 bytes
+HTML transferred:       470392 bytes
+Requests per second:    750.08 [#/sec] (mean)
+Time per request:       133.319 [ms] (mean)
+Time per request:       1.333 [ms] (mean, across all concurrent requests)
+Transfer rate:          281.22 [Kbytes/sec] received
+
+}}}
