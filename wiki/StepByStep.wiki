@@ -7,3 +7,5 @@ ModPython
 [ProxyBalancer]
 
 [CGI]
+
+[PythonDebug PythonDebug]
