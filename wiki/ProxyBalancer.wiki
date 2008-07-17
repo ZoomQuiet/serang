@@ -74,5 +74,5 @@ root   29137  0.0  0.0   3220   812 pts/0    R+   16:49   0:00 egrep (PID|nginx)
 
 几篇javaeye上的文章
 
-    # http://www.javaeye.com/topic/155542
-    # http://www.javaeye.com/topic/154538
+    # [http://www.javaeye.com/topic/155542 RoR部署方案深度剖析]
+    # [http://www.javaeye.com/topic/154538 RoR网站如何利用lighttpd的X-sendfile功能提升文件下载性能]
