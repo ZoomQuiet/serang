@@ -41,7 +41,8 @@ http {
 }}}
 或者另一种方式，将不同的应用以CGI方式发布到不同端口。
 
-作为proxy使用时，fcgi方式的配置
+
+另外，作为proxy使用时，fcgi方式的配置
 {{{
         location / {
             # host and port to fastcgi server
