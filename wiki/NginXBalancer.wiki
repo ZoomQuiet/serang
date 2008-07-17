@@ -34,9 +34,12 @@ http {
         location /wiki {
         	proxy_pass http://wiki_cluster;
 	}
+        location /blog {
+        	proxy_pass http://blog_cluster;
+	}
 }
 }}}
-
+或者另一种方式，将不同的应用以CGI方式发布到不同端口。
 
 作为proxy使用时，fcgi方式的配置
 {{{
