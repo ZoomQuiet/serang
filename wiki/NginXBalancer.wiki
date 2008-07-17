@@ -7,11 +7,9 @@ http {
         server 10.0.22.21:5555;
         server 10.0.22.22:5555;
     }
-    
     server {
         listen 80;
         server_name localhost;
-        
         location / {
         	proxy_pass http://cluster;
 	}
