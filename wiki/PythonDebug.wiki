@@ -1,0 +1,405 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.0//EN" "html.dtd">
+<HTML> 
+  <HEAD> <LINK REL="stylesheet" TYPE="text/css" HREF="../ferg.css"> 
+	 <TITLE>Debugging in Python</TITLE>
+	 <META NAME="resource-type" CONTENT="document">
+	 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+	 <META NAME="description" CONTENT="Debugging in Python">
+	 <META NAME="keywords" CONTENT="Python debugger debugging">
+	 <META NAME="revisit-after" CONTENT="2 days"> 
+  </HEAD> 
+  <BODY> 
+	 <TABLE> 
+		<TR> 
+		  <TD ALIGN="left" WIDTH="10%"> <A HREF="http://www.pythonology.org"><IMG
+			 SRC="../python-logo.gif"
+			 ALT="Visit Pythonology.org for more information about Python"
+			 TITLE="Visit Pythonology.org for more information about Python" BORDER="0"
+			 ALIGN="MIDDLE" WIDTH="211" HEIGHT="71"></A> </TD> 
+		  <TD WIDTH="80%" ALIGN="center"> 
+			 <CENTER> 
+				<H1>Debugging in Python</H1> <A
+				HREF="../index.html">Home</A> <BR>Updated: 2007-03-21<BR>Contact
+				<A HREF="../contact_info/index.html">Stephen Ferg</A></CENTER> </TD> 
+		  <TD WIDTH="10%" ALIGN="right"> 
+			 <CENTER><!-- BEGIN WebSTAT Activation Code -->
+
+				<SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript" SRC="http://hits.webstat.com/cgi-bin/wsv2.cgi?40046&WSpn=DebuggingInPython"></SCRIPT> 
+				<NOSCRIPT> 
+				  <P><A HREF="http://www.webstat.com">
+					 <IMG
+					  SRC="http://hits.webstat.com/scripts/wsb.php?ac=40046&WSpn=DebuggingInPython"
+					  BORDER="0" ALT="WebSTAT - Free Web Statistics" WIDTH="88" HEIGHT="30"></A> </P>
+				  </NOSCRIPT><!-- END WebSTAT Activation Code --></CENTER> </TD> 
+		</TR> 
+	 </TABLE> <HR SIZE="3" COLOR="tan"> 
+	 <P><!-- Creative Commons Licence -->
+		<A REL="license" HREF="http://creativecommons.org/licenses/by/2.0/"></A> 
+		<BR><SMALL><SMALL><A REL="license"
+		HREF="http://creativecommons.org/licenses/by/2.0/"><IMG
+		ALT="Creative Commons Licence" BORDER="0"
+		SRC="http://creativecommons.org/images/public/somerights20.gif" WIDTH="88"
+		HEIGHT="31" ALIGN="LEFT"></A> This work is licensed under the
+		<A REL="license" HREF="http://creativecommons.org/licenses/by/2.0/">Creative
+		Commons Attribution 2.0 License</A> You are free to copy, distribute, and
+		display the work, and to make derivative works (including translations). If you
+		do, you must give the original author credit. The author specifically permits
+		(and encourages) teachers to post, reproduce, and distribute some or all of
+		this material for use in their classes or by their students.</SMALL></SMALL><!-- /Creative Commons Licence -->
+
+<!--
+
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+                     xmlns:dc="http://purl.org/dc/elements/1.1/"
+                     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="">
+   <dc:type rdf:resource="http://purl.org/dc/dcmitype/Text" />
+   <license rdf:resource="http://creativecommons.org/licenses/by/2.0/" />
+</Work>
+
+<License rdf:about="http://creativecommons.org/licenses/by/2.0/">
+   <permits rdf:resource="http://web.resource.org/cc/Reproduction" />
+   <permits rdf:resource="http://web.resource.org/cc/Distribution" />
+   <requires rdf:resource="http://web.resource.org/cc/Notice" />
+   <requires rdf:resource="http://web.resource.org/cc/Attribution" />
+   <permits rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+</License>
+
+</rdf:RDF>
+
+--></P><HR SIZE="3" COLOR="tan"> 
+	 <P>As a programmer, one of the first things that you need for serious
+		program development is a debugger. </P> 
+	 <P> Python has a debugger, which is available as a module called <B>pdb</B>
+		(for "Python DeBugger", naturally!). Unfortunately, most discussions of pdb are
+		not very useful to a Python newbie -- most are very terse and simply rehash the
+		<A HREF="http://www.python.org/doc/current/lib/module-pdb.html">description of
+		pdb in the Python library reference manual</A>. The discussion that I have
+		found most accessible is in the first four pages of Chapter 27 of the
+		<A
+		 HREF="http://www.amazon.com/exec/obidos/ASIN/0764548077/qid%3D1005424462/ref%3Dsr%5F11%5F0%5F1/102-2202009-5284143">Python
+		2.1 Bible</A>. </P> 
+	 <P> So here is my own personal gentle introduction to using pdb. It assumes
+		that you are not using any IDE -- that you're coding Python with a text editor
+		and running your Python programs from the command line. </P> 
+	 <H3>Some Other Debugger Resources</H3> 
+	 <UL> 
+		<!--<LI><A HREF="../papers/ferg-debugger_introduction.html"> An Introduction
+		  to Debugger Terms and Concepts</A> </LI>-->
+
+		<LI>For information on the IDLE interactive debugger, go to
+		  <A
+		  HREF="http://www.python.org/idle/doc/idle2.html#Debugger">http://www.python.org/idle/doc/idle2.html#Debugger</A>
+		  </LI> 
+		<LI>For information on the Wing IDE debugger, go to
+		  <A
+		  HREF="http://wingide.com/psupport/wingide-1.1/node7.html">http://wingide.com/psupport/wingide-1.1/node7.html</A>
+		  </LI> 
+	 </UL> <HR> 
+	 <P> </P> 
+	 <H2>Getting started -- pdb.set_trace()</H2> 
+	 <P> To start, I'll show you the very simplest way to use the Python
+		debugger. </P> 
+	 <OL> 
+		<LI> Let's start with a simple program, <B>epdb1.py</B>. 
+		  <BLOCKQUOTE> 
+			 <PRE>
+
+    # epdb1.py -- experiment with the Python debugger, pdb
+    a = "aaa"
+    b = "bbb"
+    c = "ccc"
+    final = a + b + c
+    print final
+    </PRE></BLOCKQUOTE>
+		</LI> 
+		<LI>Insert the following statement at the beginning of your Python
+		  program. This statement imports the Python debugger module, pdb. 
+		  <BLOCKQUOTE> 
+			 <PRE>import pdb</PRE></BLOCKQUOTE>
+		</LI> 
+		<LI> Now find a spot where you would like tracing to begin, and insert
+		  the following code: 
+		  <BLOCKQUOTE> 
+			 <PRE>pdb.set_trace()</PRE></BLOCKQUOTE>
+		  So now your program looks like this. (Click <A HREF="epdb1.py">HERE</A>
+
+		  for the source code.) 
+		  <PRE>
+        # epdb1.py -- experiment with the Python debugger, pdb
+        <B>import pdb</B>
+        a = "aaa"
+        <B>pdb.set_trace()</B>
+        b = "bbb"
+        c = "ccc"
+        final = a + b + c
+        print final
+        </PRE> </LI> 
+		<LI> Now run your program from the command line as you usually do, which
+		  will probably look something like this: 
+		  <PRE>
+
+        PROMPT&gt; python epdb1.py</PRE> </LI> 
+	 </OL> 
+	 <P> When your program encounters the line with <CODE>pdb.set_trace()</CODE> it will start tracing. That is, it will (1) stop, (2) display the
+		"current statement" (that is, the line that will execute next) and (3) wait for
+		your input. You will see the pdb prompt, which looks like this: </P> 
+	 <PRE>
+           (Pdb)</PRE>
+
+
+<!-- ============================================================================================ -->
+	 <P></P> 
+	 <H2>Execute the next statement... with "n" (next)</H2> 
+	 <P> At the (Pdb) prompt, press the lower-case letter "n" (for "next") on
+		your keyboard, and then press the ENTER key. This will tell pdb to execute the
+		current statement. Keep doing this -- pressing "n", then ENTER. </P> 
+	 <P>Eventually you will cometo the end of your program, and it will
+		terminate and return you to the normal command prompt. </P> 
+	 <P>Congratulations! You've just done your first debugging run! </P> 
+	 <P>
+<!-- ============================================================================================ -->
+	 </P> 
+	 <P></P> 
+	 <H2>Repeating the last debugging command... with ENTER</H2> 
+	 <P> This time, do the same thing as you did before. Start your program
+		running. At the (Pdb) prompt, press the lower-case letter "n" (for "next") on
+		your keyboard, and then press the ENTER key. </P> 
+	 <P> But this time, after the first time that you press "n" and then ENTER,
+		don't do it any more. Instead, when you see the (Pdb) prompt, just press ENTER.
+		You will notice that pdb continues, just as if you had pressed "n". &nbsp; So
+		this is Handy Tip #1: </P> 
+	 <BLOCKQUOTE><I>If you press ENTER without entering anything, pdb will
+		re-execute the last command that you gave it. </I></BLOCKQUOTE>
+
+	 <P>In this case, the command was "n", so you could just keep stepping
+		through the program by pressing ENTER. </P> 
+	 <P>Notice that as you passed the last line (the line with the "print"
+		statement), it was executed and you saw the output of the print statement
+		("aaabbbccc") displayed on your screen.
+
+
+
+<!-- ============================================================================================ -->
+	 </P> 
+	 <P></P> 
+	 <H2>Quitting it all... with "q" (quit)</H2> 
+	 <P> The debugger can do all sorts of things, some of which you may find
+		totally mystifying. So the most important thing to learn now -- before you
+		learn anything else -- is how to <B>quit</B> debugging! </P> 
+	 <P> It is easy. When you see the (Pdb) prompt, just press "q" (for "quit")
+		and the ENTER key. Pdb will quit and you will be back at your command prompt.
+		Try it, and see how it works. </P> 
+	 <P>
+
+
+<!-- ============================================================================================ -->
+	 </P> 
+	 <H2>Printing the value of variables... with "p" (print)</H2> 
+	 <P> The most useful thing you can do at the (Pdb) prompt is to print the
+		value of a variable. Here's how to do it. </P> 
+	 <P>When you see the (Pdb) prompt, enter "p" (for "print") followed by the
+		name of the variable you want to print. And of course, you end by pressing the
+		ENTER key. </P> 
+	 <P>Note that you can print multiple variables, by separating their names
+		with commas (just as in a regular Python "print" statement). For example, you
+		can print the value of the variables a, b, and c this way: </P> 
+	 <PRE>
+          p a, b, c</PRE>
+
+
+<!-- ============================================================================================ -->
+	 <P></P> 
+	 <H2>When does pdb display a line?</H2> 
+	 <P>Suppose you have progressed through the program until you see the line
+		</P> 
+	 <PRE>
+          final = a + b + c</PRE> 
+	 <P>and you give pdb the command </P> 
+	 <PRE>
+          p final</PRE> 
+	 <P>You will get a NameError exception. This is because, although you are
+		seeing the line, it has not yet executed. So the <I>final</I> variable has not
+		yet been created. </P> 
+	 <P>Now press "n" and ENTER to continue and execute the line. Then try the
+		"p final" command again. This time, when you give the command "p final", pdb
+		will print the value of <I>final</I>, which is "aaabbbccc". </P> 
+	 <P><!-- ============================================================================================ --></P>
+
+	 
+	 <H2>Turning off the (Pdb) prompt... with "c" (continue)</H2> 
+	 <P> You probably noticed that the "q" command got you out of pdb in a very
+		crude way -- basically, by crashing the program. </P> 
+	 <P>If you wish simply to stop debugging, but to let the program continue
+		running, then you want to use the "c" (for "continue") command at the (Pdb)
+		prompt. This will cause your program to continue running normally, without
+		pausing for debugging. It may run to completion. Or, if the <CODE>pdb.set_trace()</CODE> statement was inside a loop, you may encounter it again, and the (Pdb)
+		debugging prompt will appear once more. </P> 
+	 <P><!-- ============================================================================================ --></P>
+	 
+	 <H2>Seeing where you are... with "l" (list)</H2> 
+	 <P> As you are debugging, there is a lot of stuff being written to the
+		screen, and it gets really hard to get a feeling for where you are in your
+		program. That's where the "l" (for "list") command comes in. (Note that it is a
+		lower-case "L", not the numeral "one" or the capital letter "I".) </P> 
+	 <P> "l" shows you, on the screen, the general area of your program's souce
+		code that you are executing. By default, it lists 11 (eleven) lines of code.
+		The line of code that you are about to execute (the "current line") is right in
+		the middle, and there is a little arrow <CODE>"--&gt;"</CODE> that points to it. </P> 
+	 <P> So a typical interaction with pdb might go like this </P> 
+	 <UL> 
+		<LI>The pdb.set_trace() statement is encountered, and you start tracing
+		  with the (Pdb) prompt</LI> 
+		<LI>You press "n" and then ENTER, to start stepping through your
+		  code.</LI> 
+		<LI>You just press ENTER to step again.</LI> 
+		<LI>You just press ENTER to step again.</LI> 
+		<LI>You just press ENTER to step again. etc. etc. etc.</LI> 
+		<LI>Eventually, you realize that you are a bit lost. You're not exactly
+		  sure where you are in your program any more. So... </LI> 
+	 </UL> 
+	 <UL> 
+		<LI>You press "l" and then ENTER. This lists the area of your program
+		  that is currently being executed.</LI> 
+		<LI>You inspect the display, get your bearings, and are ready to start
+		  again. So....</LI> 
+		<LI>You press "n" and then ENTER, to start stepping through your
+		  code.</LI> 
+		<LI>You just press ENTER to step again.</LI> 
+		<LI>You just press ENTER to step again. etc. etc. ec.</LI> 
+	 </UL>
+
+
+
+<!-- ============================================================================================ -->
+	 <P></P> 
+	 <H2>Stepping into subroutines... with "s" (step into)</H2> 
+	 <P> Eventually, you will need to debug larger programs -- programs that use
+		subroutines. And sometimes, the problem that you're trying to find will lie
+		buried in a subroutine. Consider the following program. (Click
+		<A HREF="epdb2.py">HERE</A> for the source code.) </P> 
+	 <PRE>
+        # epdb2.py -- experiment with the Python debugger, pdb
+        import pdb
+
+        def combine(s1,s2):      # define subroutine combine, which...
+            s3 = s1 + s2 + s1    # sandwiches s2 between copies of s1, ...
+            s3 = '"' + s3 +'"'   # encloses it in double quotes,...
+            return s3            # and returns it.
+
+        a = "aaa"
+        pdb.set_trace()
+        b = "bbb"
+        c = "ccc"
+        final = combine(a,b)
+        print final
+        </PRE> 
+	 <P>As you move through your programs by using the "n" command at the (Pdb)
+		prompt, you will find that when you encounter a statement that invokes a
+		subroutine -- the <CODE>final = combine(a,b)</CODE> statement, for example -- pdb treats it no differently than any other
+		statement. That is, the statement is executed and you move on to the next
+		statement -- in this case, to <CODE>print final</CODE>. </P> 
+	 <P>But suppose you suspect that there is a problem in a subroutine. In our
+		case, suppose you suspect that there is a problem in the <CODE>combine</CODE> subroutine. What you want -- when you encounter the <CODE>final = combine(a,b)</CODE> statement -- is some way to <I>step into</I> the <CODE>combine</CODE> subroutine, and to continue your debugging inside it. </P> 
+	 <P>Well, you can do that too. Do it with the "s" (for "step into") command.
+		</P> 
+	 <P>When you execute statements that do not involve function calls, "n" and
+		"s" do the same thing -- move on to the next statement. But when you execute
+		statements that invoke functions, "s", unlike "n", will <I>step into</I> the
+		subroutine. In our case, if you executed the <CODE>final =
+
+
+
+		combine(a,b)</CODE> statement using "s", then next statement that pdb would show you would
+		be the first statement in the <CODE>combine</CODE> subroutine: </P> 
+	 <PRE>               def combine(s1,s2): </PRE> 
+	 <P>and you will continue debugging from there. </P> 
+	 <P> </P> 
+	 <P>
+
+
+<!-- ============================================================================================ -->
+	 </P> 
+	 <P></P> 
+	 <H2>Continuing... but just to the end of the current subroutine... with "r"
+		(return)</H2> 
+	 <P> When you use "s" to step into subroutines, you will often find yourself
+		trapped in a subroutine. You have examined the code that you're interested in,
+		but now you have to step through a lot of uninteresting code in the subroutine.
+		</P> 
+	 <P> In this situation, what you'd like to be able to do is just to skip
+		ahead to the end of the subroutine. That is, you want to do something like the
+		"c" ("continue") command does, but you want just to continue to the end of the
+		subroutine, and then resume your stepping through the code. </P> 
+	 <P>You can do it. The command to do it is "r" (for "return" or, better,
+		"continue until return"). If you are in a subroutine and you enter the "r"
+		command at the (Pdb) prompt, pdb will continue executing until the end of the
+		subroutine. At that point -- the point when it is ready to return to the
+		calling routine -- it will stop and show the (Pdb) prompt again, and you can
+		resume stepping through your code. </P> 
+	 <P>
+
+<!-- ============================================================================================ -->
+	 </P> 
+	 <P></P> 
+	 <H2>You can do anything at all at the (Pdb) prompt ... </H2> 
+	 <P> </P> 
+	 <P>Sometimes you will be in the following situation -- You think you've
+		discovered the problem. The statement that was assigning a value of, say, "aaa"
+		to variable var1 was wrong, and was causing your program to blow up. It should
+		have been assigning the value "bbb" to var1. </P> 
+	 <P>... at least, you're <U>pretty</U> sure that was the problem... </P> 
+	 <P>What you'd really like to be able to do, now that you've located the
+		problem, is to assign "bbb" to var1, and see if your program now runs to
+		completion without bombing. </P> 
+	 <P>It can be done! </P> 
+	 <P>One of the nice things about the (Pdb) prompt is that you can do
+		<U>anything</U> at it -- you can enter <U>any command that you like</U> at the
+		(Pdb) prompt. So you can, for instance, enter this command at the (Pdb) prompt.
+		</P> 
+	 <PRE>               <B>(Pdb)</B> var1 = "bbb"</PRE> 
+	 <P>You can then continue to step through the program. Or you could be
+		adventurous -- use "c" to turn off debugging, and see if your program will end
+		without bombing! </P> 
+	 <P>
+
+<!-- ============================================================================================ -->
+	 </P> 
+	 <P></P> 
+	 <H2 TITLE="Thanks to Dick Morris for the information in this section.">...
+		but be a little careful! <A HREF="#footnote1"><SUP>1</SUP></A></H2> 
+	 <P> </P> 
+	 <P>Since you can do anything at all at the (Pdb) prompt, you might decide
+		to try setting the variable <B><CODE>b</CODE></B> to a new value, say "BBB", this way: </P> 
+	 <PRE>               <B>(Pdb)</B> b = "BBB"</PRE> 
+	 <P>If you do, pdb produces a strange error message about being unable to
+		find an object named <CODE><B>'= "BBB" '</B></CODE>. Why??? </P> 
+	 <P>What happens is that pdb attempts to execute the pdb <CODE><B>b</B></CODE> command for setting and listing breakpoints (a command that we haven't
+		discussed). It interprets the rest of the line as an argument to the <CODE><B>b</B></CODE> command, and can't find the object that (it thinks) is being referred
+		to. So it produces an error message. </P> 
+	 <P> So how can we assign a new value to b? The trick is to start the
+		command with an exclamation point (!). </P> 
+	 <PRE>               <B>(Pdb)</B>!b = "BBB"</PRE> 
+	 <P>An exclamation point tells pdb that what follows is a Python statement,
+		not a pdb command.
+
+<!-- ============================================================================================ -->
+	 </P> 
+	 <P></P> 
+	 <H2>The End</H2> 
+	 <P> Well, that's all for now. There are a number of topics that I haven't
+		mentioned, such as help, aliases, and breakpoints. For information about them,
+		try the online reference for pdb commands on the Python documentation web site
+		at <A
+		HREF="http://www.python.org/doc/current/lib/debugger-commands.html">www.python.org/doc/current/lib/debugger-commands.html</A>.
+		In addition, I recommend Jeremy Jones' article
+		<A HREF="http://www.onlamp.com/pub/a/python/2005/09/01/debugger.html"
+		TARGET="_blank">Interactive Debugging in Python</A> in O'Reilly's Python
+		DevCenter.</P> 
+	 <P> I hope that this introduction to pdb has been enough to get you up and
+		running fairly quickly and painlessly. Good luck! </P> 
+	 <P>&mdash;Steve Ferg </P> <HR> 
+	 <P> <A NAME="footnote1" ID="footnote1"></A> <SUP>1</SUP> Thanks to Dick
+		Morris for the information in this section. </P> </BODY>
+
+</HTML>
