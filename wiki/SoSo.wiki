@@ -13,7 +13,7 @@
     另外，FCGI不会自己开buffer，和FCGI的实现也有关系
 
 ===为什么在ClientNode上使用Nginx===
-    对于静态文件的处理，Nginx是有绝对优势，相对apache的优势可不是一点半点。从目前的[http://survey.netcraft.com/Reports/200806/ 统计数据]上看，Nginx的增长速度也的确很快。成为仅次于Apache的了。
+    对于静态文件的处理，Nginx是有绝对优势，相对apache的优势可不是一点半点。从目前的[http://survey.netcraft.com/Reports/200806/ 统计数据]上看，Nginx的增长速度也的确很快。仅次于Apache。
 
     另外，Nginx的loadbalance以及 reconfiguration and online upgrade without interruption of the client processing 功能，可以使client变个很灵活，符合之前对client功能的期望。
 
