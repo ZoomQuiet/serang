@@ -1,5 +1,5 @@
-=为什么MachineNode用CGI方式=
-=为什么在MachineNode上使用Lighttpd+FCGI=
+===为什么MachineNode用CGI方式===
+===为什么在MachineNode上使用Lighttpd+FCGI===
 
 Apache/Nginx是针对每个应用服务器连接分配固定Size的Buffer，如果使用mod_fastcgi模块，Apache的接收缓冲区是8KB；使用mod_fcgid模块，接收缓冲区是64KB。
 
@@ -12,7 +12,8 @@ Lighttpd并不针对应用服务器的每个连接分配固定的Buffer，而是
 
 另外，FCGI不会自己开buffer，和FCGI的实现也有关系
 
-=为什么在ClientNode上使用Nginx=
+===为什么在ClientNode上使用Nginx===
     对于静态文件的处理，Nginx是有绝对优势，相对apache的优势可不是一点半点。从目前的[http://survey.netcraft.com/Reports/200806/ 统计数据]上看，Nginx的增长速度也的确很快。成为仅次于Apache的了。
+    Nginx的loadbalance以及 reconfiguration and online upgrade without interruption of the client processing 功能，可以使client变个很灵活，符合之前对client功能的期望。
 
-=静态文件为什么要和动态文件分离，这样发布，应用结构需要怎么变化=
+===静态文件为什么要和动态文件分离，这样发布，应用结构需要怎么变化===
