@@ -1,0 +1,18 @@
+=为什么MachineNode用CGI方式=
+=为什么在MachineNode上使用Lighttpd+FCGI=
+
+Apache/Nginx是针对每个应用服务器连接分配固定Size的Buffer，如果使用mod_fastcgi模块，Apache的接收缓冲区是8KB；使用mod_fcgid模块，接收缓冲区是64KB。
+
+如果页面数据超过8/64KB，FastCGI进程被挂在render方法上！必须等到Web服务器的缓冲区清空，把页面数据全部接收下来以后，FastCGI进程才能结束本次调用，处理下一个请求。
+当一次交互添不满的时候，会有什么问题？
+
+Lighttpd并不针对应用服务器的每个连接分配固定的Buffer，而是尽可能的把应用服务器返回的数据一次性接收下来，因此无论应用服务器返回多大的数据量，Lighttpd都是全收。
+
+如此看来，不能用Apache/Nginx搭配FastCGI应用服务器，通过CGI和python链接的时候最好采用Lighttpd。
+
+另外，FCGI不会自己开buffer，和FCGI的实现也有关系
+
+=为什么在ClientNode上使用Nginx=
+    对于静态文件的处理，Nginx是有绝对优势，相对apache的优势可不是一点半点。从目前的[http://survey.netcraft.com/Reports/200806/ 统计数据]上看，Nginx的增长速度也的确很快。成为仅次于Apache的了。
+
+=静态文件为什么要和动态文件分离，这样发布，应用结构需要怎么变化=
