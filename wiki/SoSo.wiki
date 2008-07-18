@@ -19,3 +19,7 @@
 ===静态文件和动态文件要分离吗，如果分离，应用结构需要怎么变化===
 
     之前在考虑应用发布的时候，把整个应用一股脑的丢在MachineNode上，应用中的静态文件也是丢过去给MachineNode处理。如果每个MachineNode上配置sendfile的支持，如果Nginx的代理也是只过网卡的，就没关系了
+
+
+
+GAE是GFE(google frontend)
