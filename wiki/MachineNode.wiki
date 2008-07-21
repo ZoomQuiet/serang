@@ -24,3 +24,13 @@ BaseStructure
 基础环境的安装
 安装的过程就是复制吗，操作系统是否已经提前安装好了，如果不是网络安装，是否现实：连上网后，自动注册到MR，由MR调度安装
 要做到大规模的维护，这个不能少，比如操作系统的升级，也要能直接做掉。
+
+=应用发布的结构=
+http://5460.appspot.com/?id=agQ1NDYwcgwLEgVQaG90bxjxAQw&detail=true?nonsense=something_that_ends_with.png
+一台机器上运行很多python应用，现在了解到的两种方式
+
+    # 通过CGI的方式，为每个应用启动一个端口
+    # 不同的应用作为一个应用的模块
+        * 对于django需要自己处理url，其他的未知
+
+lighttpd没有每次交互的那个buffer的限制，但nginx对内存的管理也很好，有人把这个buffer设置为128k后，基本可以杜绝一次请求超过1次交互的情况
