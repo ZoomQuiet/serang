@@ -27,6 +27,7 @@ BaseStructure
 
 =应用发布的结构=
 http://5460.appspot.com/?id=agQ1NDYwcgwLEgVQaG90bxjxAQw&detail=true?nonsense=something_that_ends_with.png
+
 一台机器上运行很多python应用，现在了解到的两种方式
 
     # 通过CGI的方式，为每个应用启动一个端口
