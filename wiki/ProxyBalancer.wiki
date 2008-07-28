@@ -78,3 +78,5 @@ root   29137  0.0  0.0   3220   812 pts/0    R+   16:49   0:00 egrep (PID|nginx)
     # [http://www.javaeye.com/topic/154538 RoR网站如何利用lighttpd的X-sendfile功能提升文件下载性能]
 
 [ 总结方案]
+[http://www.okpython.com/bbs/archiver/tid-229.html threaded也需要启动多个进程]
+如果django运行在threaded模式下，并且负荷很高，只起一个fastcgi进程可能是不够的，一是可能不稳定，二是 GIL的限制。因此，可能需要起多个运行在threaded模式的fastcgi进程。我现在临时的做法是用一个nginx虚拟主机做反向代理，后面是多组nginx+django threaded fastcgi。回头可以考虑调整一下。
