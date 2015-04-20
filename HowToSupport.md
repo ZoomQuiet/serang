@@ -1,0 +1,39 @@
+DevPlan
+## 如何做到支持django，以及更多的web框架 ##
+
+要做到支持更多的框架，需要怎么设计
+
+遇到了很多的问题，首先我对python很不了解，一些根本不是问题的地方也花费了很多时间。
+
+今天的尝试，有几点总结
+  1. 如果支持django，需要屏蔽掉settings.py，需要增加一些重新加载的机制，这个论坛上Jiahua Huang给了一些建议
+```
+            不修改文件的话，
+            可以改写 apps/urls.py 加入钩子，
+            每次执行都自动重新扫描下，导入、合并 urls。
+
+            django 等不支持热部署的东西要做到热部署，
+            最简单的是使用 CGI 方式（GAE 也是 CGI）。
+
+            或者 fcgi 方式定时/按需杀掉旧进程 
+```
+> > 明天来看一下这个。
+  1. PythonHandler可能作一些事情，但未知
+```
+            #每个加入应用需要有一个handler
+            from django.core.handlers import modpython
+
+            def handler(req):
+                 import os, os.path, sys
+                 # 当前路径加入
+                 sys.path.append(os.path.dirname(__file__))
+                 # 设置配置文件路径
+                 os.environ["DJANGO_SETTINGS_MODULE"] = 'wiki.settings'
+                 # 将请求交给 Django,并返回
+                 return(modpython.handler(req))
+```
+> > 增加系统的一个handler，可以自动的执行加入应用中的handler
+  1. 我现在更需要一些方向性的意见，感觉自己在到处乱碰。
+
+
+一个最简单直接的办法，CGI，为每个应用独立运行一个CGI的程序，把这个口子开给NginX之类的proxy，外面再作一层loadbalance

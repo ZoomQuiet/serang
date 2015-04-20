@@ -1,0 +1,24 @@
+[返回](StepByStep.md)
+
+
+# 正向和反向代理 #
+
+## Apache可以配置成为正向和反向代理 ##
+
+正向代理是一个能使您的浏览器连接一个平时无法访问的远端网络的媒介。一个正向代理也能用于缓冲数据，以降低正向代理和远端web服务器之间的负载。
+
+Apache的mod\_proxy在使用ProxyRemote指令时，可以看作是一个正向代理。另外，数据缓冲的功能可以靠配置mod\_cache来完成。其它提供正向代理的软件还包括Squid。
+
+反向代理是一个web服务器系统。除了为客户端提供位于本地磁盘上的页面或是由CGI动态生成的页面之外，它还能为客户端提供位于其它web服务器上的web页面，从而使这些页面看起来像是存在于这个代理服务器上一样。
+
+当使用了mod\_cache配置一个反向代理后，它可以作为一个比较慢的web服务器的缓冲来使用。反向代理也可以启用高级URL策略和管理技术，从而使处于不同web服务器系统或是体系的web页面同时存在于同一个URL空间下。反向代理对于实现具有很多或不同的web站点后端的集中管理非常理想。复杂的多层服务器系统可以使用一个Apache的mod\_proxy前端和任意数量的后端web服务器来进行架构。
+
+反向代理使用ProxyPass和ProxyPassReverse指令进行配置。可以使用mod\_cache和正向代理结合启用缓冲功能。
+
+我看了这个文档
+
+[mod\_proxy中文文档](http://man.chinaunix.net/newsoft/ApacheManual/mod/mod_proxy.html)
+
+[mod\_proxy](http://httpd.apache.org/docs/2.2/mod/mod_proxy.html)
+[mod\_proxy\_http](http://httpd.apache.org/docs/2.2/mod/mod_proxy_http.html)
+[mod\_proxy\_balancer](http://httpd.apache.org/docs/2.2/mod/mod_proxy_balancer.html)

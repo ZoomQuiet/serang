@@ -1,0 +1,48 @@
+StepByStep
+
+[mod\_python中文翻译](http://wiki.woodpecker.org.cn/moin/modpythoncn)
+
+[安装mod\_python](InstallMod_python.md)
+
+```
+当一个请求发出时,apache通过调用mod_python中的处理器分步处理请求,Mod_python首先检查请求的那个处理器是否在配置文件中指定了(记住，它的角色是发报机dispatcher),
+在我们的例子中,mod_python除了调用默认的那个处理器外不会调用其他的任何处理器,然后,mod_python会发现"pythonHandler myscript"指示,并按照下面的步骤来进行:
+
+1．如果以前没有做过，那么就把pythonHandler指定的那个目录加到sys.path中。
+
+2．尝试引入myscript的模块(注意,如果myscript在pythonHandler指定那个目录的子目录中的话,引入会出错,因为子目录并没有加到sys.path中,解决这种情况的方法是使用包)例如:”pythonHandler subdir.myscript”
+
+3．在myscript中寻找名字叫handler的方法。
+
+4．调用这个方法，并把request对象传递给它。 
+```
+
+1.指的是哪个目录？是否意味着这样不会有性能问题，如果在handler中装载目录，是否也没问题呢
+
+```
+Python的C API使python具有创建子解释器的能力。在Py newInterpreter()方法的文档中有关于子解释器的更详细的描述。
+每一个子解释器都有它自己的单独的命名空间，不能被其他的子解释器访问到。子解释器使那些运行在apache服务器中的程序互不干扰。 
+```
+看到曙光
+```
+这意味着运行在同一个虚拟服务器中所有脚本都在同一个子解释器中执行，但是在不同虚拟服务器中的脚本使用完全不同的命名空间运行在不同的子解释器中
+```
+这个虚拟服务器指的是什么？一个python的运行环境？
+
+
+
+### 理解解释器实例 ###
+
+mod\_python系统在Apache中内置了Python，但是实际上在很多情况下，它会为服务器使用多个Python实例。在默认的配置中，每个Apache虚拟服务器上的Python程序会在它们自己的 Python解释器实例中运行。也就是说，在一个虚拟服务器上运行的Python代码是不能和其他虚拟服务器上的代码结合的，因为它们存在于独立的 Python解释器中。这通常是一件好事，因为它可以阻止其他站点错误或恶意的Python程序所引起的麻烦。
+
+但是有时这却是一个问题。例如，也许您在多个虚拟服务器上运行同样的Python程序。如果每个虚拟服务器都使用它们自己的Python环境，那么每个Web服务器消耗的资源就会增加。对资源需求的逐渐增加意味着需要更多的内存，因为比脚本必需的拷贝还要多的拷贝被一次载入内存。它还会增加数据库的连接，并且这些连接还是一直保持的。
+
+而在另外一些情况下，您可能会希望增加单独解释器的数量。如果您在一个单独的虚拟服务器上运行多个不同程序的时候，就会发生这样的情况。增加单独解释器的数量会使一个Python程序的问题影响其他的程序，变得更加困难。例如某个损坏数据库连接的Bug，可能也被其他的程序使用着。
+
+mod\_python模块定义了3个Apache配置指示来控制这种行为。PythonInterpreter可以很好地控制如何使用解释器。它带一个单独的字符串为参数。每一个被PythonInterpreter 控制的程序都会使用同一个解释器空间。您可以把PythonInterpreter GLOBAL这句话放在您的服务器配置文件的开始，这样可以强制整个系统使用同一个解释器。注意，这里的GLOBAL可以被替换成任何您选择的其他名称。
+
+还有两个选择：PythonInterpPerDirectory和PythonInterpPerDirective。它们分别针对不同的目录或Apache指示的范围请求独立的解释器。
+
+尽管这些指示提供了一定程度的控制，但是它们可能还是不能完全适合您的要求。例如：在您的配置文件的头部，指定PythonInterpreter，也不能保证只存在一个解释器。它只能保证在当前Python脚本的位置不会再有新的解释器。
+
+在Apache内部，它使用一个forking进程来同时处理多个客户端的请求。每个forked的Apache进程是它本身的实体，因此每一个forked进程会含有它自己的Python解释器。这个规则描述了在一个单独forked进程中的解释器是如何交互的，而使用mod\_python就不是这样的，因为一个真正的全局变量是可以被所有连接的Python程序访问的。在不同forked进程中的解释器会被自动地分离出来。作为开发人员，您控制不了哪个forked进程被调用来处理一个给定的连接，而且您也控制不了给出的forked进程的存在期限。在forked-process模式下，您必须确保数据库能同时处理的连接数量等于Apache中forked进程的最大值。

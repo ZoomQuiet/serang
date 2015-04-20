@@ -1,0 +1,115 @@
+如果使用Django，每台MachineNode上会运行多个Django的应用，几个问题带确定：
+
+# 前提 #
+通过以下的URL访问不同的应用
+http://host:port/wiki
+
+http://host:port/blog
+
+# 目前的解决方案 #
+
+为每个应用写一个配置文件，如下
+```
+appid = "wiki"
+
+prefix = ""
+
+patterns = [
+    (r'^wiki/$', 'wiki.views.index'),
+    (r'^wiki/(?P<pagename>\w+)/$', 'wiki.views.index'),
+    (r'^wiki/(?P<pagename>\w+)/edit/$', 'wiki.views.edit'),
+    (r'^wiki/(?P<pagename>\w+)/save/$', 'wiki.views.save')]
+    
+template_paths=(
+  'templates'
+)    
+```
+
+commonHandler负责加载各个应用的配置
+```
+def handler(req):
+
+    moduleName = getModuleName(req.uri)
+
+     try:
+        mod = __import__(moduleName+"/app")
+        #urls就是settings中指定的那个  
+        urls.appendUrlPatterns(mod.appid,mod.prefix,mod.patterns)    
+    except:
+        raise404("Can not found module : " + moduleName + "/app")
+
+    return modpython.handler(req)
+```
+
+在urls中增加如下方法
+```
+#可能有几个写在这里
+urlpatterns = patterns('',
+    (r'^ddd/','zz.views.dd')
+)
+
+modules = []
+
+def appendUrlPatterns(appid,prefix,patterns):
+    """for auto load"""
+    #check
+    if modules.__contains__(appid):
+        return
+    
+    modules.append(appid)
+    
+    for t in patterns:
+        regex, view_or_include = t[:2]
+        default_kwargs = t[2:]
+        if type(view_or_include) == list:
+            urlpatterns.append(RegexURLResolver(regex, view_or_include[0], *default_kwargs))
+        else:
+            urlpatterns.append(RegexURLPattern(regex, prefix and (prefix + '.' + view_or_include) or view_or_include, *default_kwargs))
+    
+```
+
+很丑陋，但可以跑，模板估计也可以用通常的方式处理。
+先把原型搭好，终于可以进行下一步工作了。
+一直再想一个问题，是不是作的这些事情本来就有现成的支持方案。那就慢慢郁闷吧orz~（这个是带尾巴的）
+
+# 之前的问题 #
+
+## 每个都是独立的应用吗 ##
+如果是独立的应用，应该如何加载。django的那个settings.py挺麻烦
+
+如果作为模块处理呢，我尝试了一下。
+
+apache中
+```
+PythonPath "['/home/serang/apps']+ sys.path" #把所有的应用都丢到这个目录下
+...
+PythonHandler commonHandler
+```
+
+
+commonHandler中作个简单的转发，如果是django的应用，需要设置module（这个module可以设置多个吗）
+```
+import os, os.path, sys
+os.environ["DJANGO_SETTINGS_MODULE"] = 'settings_apache'
+return modpython.handler(req)
+```
+
+这种情况下，template，db等都是统一放置的，唯一要变得是urls.py，当增加一个应用（模块）的时候，apps/urls.py要跟着修改
+```
+urlpatterns = patterns('',
+    (r'^wiki', include('wiki.urls')),
+    (r'^blog',include('blog.urls')),
+    (r'^ddd',include('ddd.urls')),#比如增加一个ddd模块
+)
+```
+这个问题Jiahua回答过我
+```
+可以改写 apps/urls.py 加入钩子，
+每次执行都自动重新扫描下，导入、合并 urls。
+
+django 等不支持热部署的东西要做到热部署，
+最简单的是使用 CGI 方式（GAE 也是 CGI）。
+
+或者 fcgi 方式定时/按需杀掉旧进程 
+```
+我还不知道具体怎么处理，其实由于每台机器上会有一个特定的服务来接受新的应用，当新的应用上传完毕后，这个服务可以修改urls的配置，但这个修改怎么才能生效。

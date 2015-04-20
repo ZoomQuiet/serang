@@ -1,0 +1,82 @@
+[返回](StepByStep.md)
+
+
+# [apache正反向代理](ApacheProxy.md) #
+
+# [LVS](LvsPage.md) #
+
+
+# [NginX](http://wiki.codemongers.com/NginxChsWhyUseIt) #
+
+NginX ("engine x") 是一个高性能的 HTTP 和反向代理服务器，也是一个 IMAP/POP3/SMTP 代理服务器。 Nginx 是由 Igor Sysoev 为俄罗斯访问量第二的 Rambler.ru 站点开发的，它已经在该站点运行超过两年半了。Igor 将源代码以类BSD许可证的形式发布。
+
+初步的理解是，LVS很强，但配置也很麻烦，并且需要Ldirector实现监控， NginX和HAProxy性能差一点，但使用、监控都很方便。
+性能上NginX要比apache快很多，可以作为apache的代替品。
+参考下面的这个文章
+[Nginx 0.6.31 + PHP 5.2.6（FastCGI）搭建胜过Apache十倍的Web服务器（第3版）](http://blog.s135.com/read.php/351.htm)
+
+[django-nginx](http://www.rkblog.rk.edu.pl/w/p/django-nginx/)
+
+[一篇文章](http://blog.chinaunix.net/u2/60722/showart_474181.html)
+
+网站使用NginX的，从07年10月开始增长速度的非常迅猛。NginX非常有用的一个东西是：
+  1. 平滑改变配置
+  1. 平滑升级到新的二进制代码
+
+修改配置文件的例子
+```
+#在重载前，先测试一下配置文件
+# nginx -t -c /etc/nginx/nginx.conf
+2006/09/16 13:07:10 [info] 15686#0: the configuration file /etc/nginx/nginx.conf syntax is ok
+2006/09/16 13:07:10 [info] 15686#0: the configuration file /etc/nginx/nginx.conf was tested successfully
+# ps aux | egrep '(PID|nginx)'
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root      2213  0.0  0.0   6784  2036 ?        Ss   03:01   0:00 nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx.conf
+# kill -HUP 2213
+```
+
+当 nginx 接收到 HUP 信号，它会尝试先解析配置文件（如果指定配置文件，就使用指定的，否则使用默认的），成功的话，就应用新的配置文件（例如：重新打开日志文件或监听的套接字）。之后，nginx 运行新的工作进程并从容关闭旧的工作进程。通知工作进程关闭监听套接字但是继续为当前连接的客户提供服务。所有客户端的服务完成后，旧的工作进程被关闭。如果新的配置文件应用失败，nginx 将继续使用旧的配置进行工作。
+
+这样可以实现动态负载均衡的需要
+
+简单测试了一下
+原始的worker\_processes = 2,
+```
+[root@laptop: demo]# ps aux|egrep '(PID|nginx)'
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root   28979  0.0  0.1   4284  1084 ?        Ss   16:45   0:00 nginx: master process nginx -c conf/nginx.conf
+root   29029  0.0  0.0   4436   808 ?        S    16:46   0:00 nginx: worker process   
+root   29030  0.0  0.0   4436   904 ?        S    16:46   0:00 nginx: worker process   
+root   29035  0.0  0.0   3220   824 pts/0    S+   16:46   0:00 egrep (PID|nginx)
+```
+修改为5后，执行kill -HUP 28979，增加为5个process
+```
+[root@laptop: demo]# ps aux|egrep '(PID|nginx)'
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root   28979  0.0  0.1   4268  1088 ?        Ss   16:45   0:00 nginx: master process nginx -c conf/nginx.conf
+root   29117  0.0  0.0   4404   924 ?        S    16:48   0:00 nginx: worker process   
+root   29118  0.0  0.0   4404   924 ?        S    16:48   0:00 nginx: worker process   
+root   29119  0.0  0.0   4404   828 ?        S    16:48   0:00 nginx: worker process   
+root   29120  0.0  0.0   4404   924 ?        S    16:48   0:00 nginx: worker process   
+root   29121  0.0  0.0   4404   924 ?        S    16:48   0:00 nginx: worker process   
+root   29137  0.0  0.0   3220   812 pts/0    R+   16:49   0:00 egrep (PID|nginx)
+```
+
+[NginXBalancer](NginXBalancer.md)
+
+
+# [HAProxy](http://haproxy.1wt.eu/) #
+
+
+
+[测试结果](TestResult.md)
+
+
+# 几篇javaeye上的文章 #
+
+  1. [RoR部署方案深度剖析](http://www.javaeye.com/topic/155542)
+  1. [RoR网站如何利用lighttpd的X-sendfile功能提升文件下载性能](http://www.javaeye.com/topic/154538)
+
+[总结方案](.md)
+[threaded也需要启动多个进程](http://www.okpython.com/bbs/archiver/tid-229.html)
+如果django运行在threaded模式下，并且负荷很高，只起一个fastcgi进程可能是不够的，一是可能不稳定，二是 GIL的限制。因此，可能需要起多个运行在threaded模式的fastcgi进程。我现在临时的做法是用一个nginx虚拟主机做反向代理，后面是多组nginx+django threaded fastcgi。回头可以考虑调整一下。
